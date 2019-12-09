@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         main_btn_twitter_login_btn.setOnClickListener(this)
         main_text_facebook_login_btn.setOnClickListener(this)
 
@@ -26,8 +27,11 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
 
     override fun onClick(v: View?) {
         when(v?.id){
-            R.id.main_btn_twitter_login_btn ->{
+            R.id.main_btn_twitter_login_btn -> {
                 action()
+            }
+            R.id.main_text_facebook_login_btn -> {
+
             }
         }
     }

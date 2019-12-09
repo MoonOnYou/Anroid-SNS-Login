@@ -2,4 +2,8 @@
     <string name="app_name">SNSLogin</string>
     <string name="login_by_facebook">Login With Facebook</string>
     <string name="login_by_twitter">Login With Twitter</string>
+
+    <string name="facebook_app_id">1032041780491040</string>
+    <string name="fb_login_protocol_scheme">fb1032041780491040</string>
+
 </resources>
