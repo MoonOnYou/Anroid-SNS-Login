@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SNSLogin</string>
+    <string name="login_by_facebook">Login With Facebook</string>
+    <string name="login_by_twitter">Login With Twitter</string>
+</resources>
