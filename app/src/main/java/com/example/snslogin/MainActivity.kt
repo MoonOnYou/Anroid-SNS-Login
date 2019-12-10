@@ -2,21 +2,19 @@ package com.example.snslogin
 
 import kotlinx.android.synthetic.main.activity_main.*
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.facebook.CallbackManager
+import com.facebook.*
 import com.facebook.login.LoginManager
 import com.twitter.sdk.android.core.identity.TwitterAuthClient
 import com.twitter.sdk.android.core.*
-import com.facebook.FacebookException
-import com.facebook.GraphRequest
 import com.facebook.login.LoginResult
-import com.facebook.FacebookCallback
+import com.squareup.picasso.Picasso
+
 
 
 
@@ -63,18 +61,22 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
         LoginManager.getInstance().registerCallback(facebookManager, object:FacebookCallback<LoginResult> {
 
             override fun onSuccess(result:LoginResult) {
-                
+
+
+                //Profile.getCurrentProfile() 여기 자체에서도 기본적인거는 많이 가져올수 잇는데 ...
 
                 val request:GraphRequest
+
                 request = GraphRequest.newMeRequest(result.accessToken) { user, response ->
 
                     if (user.has("email")) {
-                        Log.e("facebook email", user.getString("email"))
+                        Log.e("facebook email", user.getString("email")) // 이메일은 예외처리 해줘야겟다 ,,
                     }
 
                     facebookInfo1 = "user_id : ${user.getString("id")} \n user_name : ${user.getString("name")} \n AccessToken : ${result.accessToken.token}"
                     main_text_user_info_facebook.text = facebookInfo1
-                    main_image_profile_facebook.profileId = user.optString("id")
+                    Picasso.with(this@MainActivity).load(Profile.getCurrentProfile().getProfilePictureUri(200,200)).into(main_image_profile_facebook)
+
                 }
                 val parameters = Bundle()
                 parameters.putString("fields", "id,name,email,birthday")
@@ -105,6 +107,8 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
                     val secret = authToken.secret
 
                     twitterInfo1 = "token : \n $token \n\n secret : $secret \n\n"
+
+
                 }
 
                 override fun failure(exception: TwitterException) {
@@ -125,6 +129,9 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
             override fun success(result: Result<String>) {
                 Toast.makeText(this@MainActivity, "fetchTwitterEmail", Toast.LENGTH_SHORT).show()
                 val twitterInfo2 = "e-mail : ${result.data} \n\n user_id : ${twitterSession?.userId} \n\n screen_name :  ${twitterSession?.userName}"
+
+
+               // result.getProfileImageURL()
                 main_text_user_info_twitter.text = "$twitterInfo1  $twitterInfo2"
             }
 
