@@ -17,7 +17,8 @@ import com.facebook.FacebookException
 import com.facebook.GraphRequest
 import com.facebook.login.LoginResult
 import com.facebook.FacebookCallback
-import com.linecorp.linesdk.api.LineApiClient
+
+
 
 class MainActivity : AppCompatActivity() , View.OnClickListener{
     
@@ -62,15 +63,18 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
         LoginManager.getInstance().registerCallback(facebookManager, object:FacebookCallback<LoginResult> {
 
             override fun onSuccess(result:LoginResult) {
+                
 
                 val request:GraphRequest
                 request = GraphRequest.newMeRequest(result.accessToken) { user, response ->
-                    Log.i("TAG", "user: $user")
-                    Log.i("TAG", "AccessToken: " + result.accessToken.token)
-                    setResult(Activity.RESULT_OK)
 
-                    facebookInfo1 = "${user.getString("id")} + ${user.getString("name")} "
+                    if (user.has("email")) {
+                        Log.e("facebook email", user.getString("email"))
+                    }
+
+                    facebookInfo1 = "user_id : ${user.getString("id")} \n user_name : ${user.getString("name")} \n AccessToken : ${result.accessToken.token}"
                     main_text_user_info_facebook.text = facebookInfo1
+                    main_image_profile_facebook.profileId = user.optString("id")
                 }
                 val parameters = Bundle()
                 parameters.putString("fields", "id,name,email,birthday")

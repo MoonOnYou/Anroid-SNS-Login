@@ -8,7 +8,6 @@ import com.twitter.sdk.android.core.Twitter
 import com.twitter.sdk.android.core.TwitterAuthConfig
 import com.twitter.sdk.android.core.DefaultLogger
 import com.twitter.sdk.android.core.TwitterConfig
-import com.linecorp.linesdk.api.LineApiClientBuilder
 
 
 class BaseApplication : Application() {
