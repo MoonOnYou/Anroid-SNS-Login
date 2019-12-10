@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SNSLogin</string>
     <string name="login_by_facebook">Login With Facebook</string>
+    <string name="login_by_line">Login With Line</string>
     <string name="login_by_twitter">Login With Twitter</string>
 
     <string name="facebook_app_id">1032041780491040</string>
