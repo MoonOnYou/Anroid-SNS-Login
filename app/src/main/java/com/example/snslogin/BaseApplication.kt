@@ -12,8 +12,8 @@ import com.twitter.sdk.android.core.TwitterConfig
 
 class BaseApplication : Application() {
 
-    val CONSUMER_KEY = "HDPNjx9O7pCmDBJAoUvli6UUy"
-    val CONSUMER_SECRET = "ZMieRQuZFIAeHz4T3kIOoan70IYL6nXqlRMs3NC9sHBzJxPqLo"
+    private val consumerKey = "HDPNjx9O7pCmDBJAoUvli6UUy"
+    private val consumerSecret = "ZMieRQuZFIAeHz4T3kIOoan70IYL6nXqlRMs3NC9sHBzJxPqLo"
 
 
     override fun onCreate() {
@@ -21,7 +21,7 @@ class BaseApplication : Application() {
 
         Twitter.initialize(TwitterConfig.Builder(this)
             .logger(DefaultLogger(Log.DEBUG))
-            .twitterAuthConfig(TwitterAuthConfig(CONSUMER_KEY, CONSUMER_SECRET))
+            .twitterAuthConfig(TwitterAuthConfig(consumerKey, consumerSecret))
             .debug(true)
             .build())
 

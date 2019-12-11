@@ -7,11 +7,11 @@ import android.content.Context
 
 class Preferences private constructor() {
 
-    var user_token = ""
-    var user_image = ""
-    var user_email = ""
-    var user_name = ""
-    var user_id = ""
+    var userToken = ""
+    var userImage = ""
+    var userEmail = ""
+    var userName = ""
+    var userId = ""
 
 
     private var context: Context? = null

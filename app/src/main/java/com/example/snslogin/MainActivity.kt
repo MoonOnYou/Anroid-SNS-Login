@@ -22,9 +22,6 @@ import com.twitter.sdk.android.core.TwitterCore
 import com.linecorp.linesdk.auth.LineLoginApi
 import com.linecorp.linesdk.LineApiResponseCode
 
-
-
-
 //import sun.jvm.hotspot.utilities.IntArray // ㅇㅐ는 왜계속 에러가 날까.. 구글링 해보자 ...
 
 class MainActivity : AppCompatActivity() , View.OnClickListener{
@@ -129,6 +126,7 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
 
     fun fetchTwitterEmail(twitterSession: TwitterSession?) {
         twitterAuthClient.requestEmail(twitterSession, object : Callback<String>() {
+            @SuppressLint("SetTextI18n")
             override fun success(result: Result<String>) {
                 Toast.makeText(this@MainActivity, "fetchTwitterEmail", Toast.LENGTH_SHORT).show()
 
@@ -180,6 +178,7 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun lineRequest(requestCode: Int, intent: Intent?){
         val result = LineLoginApi.getLoginResultFromIntent(intent)
 
