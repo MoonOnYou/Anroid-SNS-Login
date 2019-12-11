@@ -139,7 +139,6 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
             override fun success(result: Result<String>) {
                 Toast.makeText(this@MainActivity, "fetchTwitterEmail", Toast.LENGTH_SHORT).show()
                 val twitterInfo2 = "e-mail : ${result.data} \n\n user_id : ${twitterSession?.userId} \n\n screen_name :  ${twitterSession?.userName}" // 유져네임은 시크릿하게만 가져 온다,아래꺼랑 다르게 토큰 가져 올수 있음 온유라는 이름은 못가져옴 // 유저 아이디 (숫자)/ 이메일은 밑에랑 동알하게 가져옴
-
                 fetchTwitterProfileUrl()
                main_text_user_info_twitter.text = "$twitterInfo1  $twitterInfo2"
             }
@@ -190,7 +189,13 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
             LineApiResponseCode.SUCCESS -> {
                 // Login successful
                 val accessToken = result.lineCredential!!.accessToken.tokenString
-                main_text_user_info_line.text = accessToken
+                val displayName = result.lineProfile!!.displayName
+                val statusMessage = result.lineProfile!!.statusMessage
+                val userId = result.lineProfile!!.userId
+                val profileUrl = result.lineProfile!!.pictureUrl.toString()
+                main_text_user_info_line.text = "displayName : $displayName \n statusMessage: $statusMessage \n userId : $userId \n accessToken: $accessToken"
+                Picasso.get().load(profileUrl).into(main_image_profile_line)
+
 
 
 //                val transitionIntent = Intent(this, PostLoginActivity::class.java)
