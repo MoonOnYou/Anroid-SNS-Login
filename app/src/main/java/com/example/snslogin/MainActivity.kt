@@ -24,6 +24,7 @@ import com.linecorp.linesdk.LineApiResponseCode
 
 
 
+
 //import sun.jvm.hotspot.utilities.IntArray // ㅇㅐ는 왜계속 에러가 날까.. 구글링 해보자 ...
 
 class MainActivity : AppCompatActivity() , View.OnClickListener{
@@ -61,7 +62,7 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
 
     private fun loginLine(){
 
-        val loginIntent = LineLoginApi.getLoginIntent(this, lineChannelId, LineAuthenticationParams.Builder().scopes(listOf(Scope.PROFILE)).build())
+        val loginIntent = LineLoginApi.getLoginIntent(this, lineChannelId, LineAuthenticationParams.Builder().scopes(listOf(Scope.PROFILE,Scope.OPENID_CONNECT, Scope.OC_EMAIL)).build())
         startActivityForResult(loginIntent, lineRequestCode)
 
     }
@@ -88,8 +89,8 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
                     }
 
                     facebookInfo1 = "user_id : ${user.getString("id")} \n user_name : ${user.getString("name")} \n AccessToken : ${result.accessToken.token}"
-                    main_text_user_info_facebook.text = facebookInfo1
-                    Picasso.get().load(Profile.getCurrentProfile().getProfilePictureUri(200,200)).into(main_image_profile_facebook)
+                    main_text_user_info.text = facebookInfo1
+                    Picasso.get().load(Profile.getCurrentProfile().getProfilePictureUri(200,200)).into(main_image_profile)
 
                 }
                 val parameters = Bundle()
@@ -115,14 +116,6 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
                     Toast.makeText(this@MainActivity, "Success", Toast.LENGTH_SHORT).show()
                     val twitterSession = result.data
                     fetchTwitterEmail(twitterSession)
-
-                    val authToken = twitterSession.authToken
-                    val token = authToken.token
-                    val secret = authToken.secret
-
-                    twitterInfo1 = "token : \n $token \n\n secret : $secret \n\n"
-
-
                 }
 
                 override fun failure(exception: TwitterException) {
@@ -138,9 +131,15 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
         twitterAuthClient.requestEmail(twitterSession, object : Callback<String>() {
             override fun success(result: Result<String>) {
                 Toast.makeText(this@MainActivity, "fetchTwitterEmail", Toast.LENGTH_SHORT).show()
+
+                val authToken = twitterSession?.authToken
+                val token = authToken?.token
+                val secret = authToken?.secret
+
+                twitterInfo1 = "token : \n $token \n\n secret : $secret \n\n"
                 val twitterInfo2 = "e-mail : ${result.data} \n\n user_id : ${twitterSession?.userId} \n\n screen_name :  ${twitterSession?.userName}" // 유져네임은 시크릿하게만 가져 온다,아래꺼랑 다르게 토큰 가져 올수 있음 온유라는 이름은 못가져옴 // 유저 아이디 (숫자)/ 이메일은 밑에랑 동알하게 가져옴
                 fetchTwitterProfileUrl()
-               main_text_user_info_twitter.text = "$twitterInfo1  $twitterInfo2"
+                main_text_user_info.text = "$twitterInfo1  $twitterInfo2"
             }
 
             override fun failure(exception: TwitterException) {
@@ -163,7 +162,7 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
 //                val photoUrlMiniSize = userResult.data.profileImageUrl.replace("_normal", "_mini")
 //                val photoUrlOriginalSize = userResult.data.profileImageUrl.replace("_normal", "")
 
-                Picasso.get().load(photoUrlNormalSize).into(main_image_profile_twitter)
+                Picasso.get().load(photoUrlNormalSize).into(main_image_profile)
 
             }
 
@@ -188,13 +187,16 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
 
             LineApiResponseCode.SUCCESS -> {
                 // Login successful
+
+                val email = result.lineIdToken?.email
+
                 val accessToken = result.lineCredential!!.accessToken.tokenString
                 val displayName = result.lineProfile!!.displayName
                 val statusMessage = result.lineProfile!!.statusMessage
                 val userId = result.lineProfile!!.userId
                 val profileUrl = result.lineProfile!!.pictureUrl.toString()
-                main_text_user_info_line.text = "displayName : $displayName \n statusMessage: $statusMessage \n userId : $userId \n accessToken: $accessToken"
-                Picasso.get().load(profileUrl).into(main_image_profile_line) // 사용자가 사진을 설정 안했으면 null 로 들어온다(그냥 아무 그림도 안뜸 ), 트위터는 기본이미지가 들어옴
+                main_text_user_info.text = "email: $email\n displayName : $displayName \n statusMessage: $statusMessage \n userId : $userId \n accessToken: $accessToken"
+                Picasso.get().load(profileUrl).into(main_image_profile) // 사용자가 사진을 설정 안했으면 null 로 들어온다(그냥 아무 그림도 안뜸 ), 트위터는 기본이미지가 들어옴
 
             }
 
