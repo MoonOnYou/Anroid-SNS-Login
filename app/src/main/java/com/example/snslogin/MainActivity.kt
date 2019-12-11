@@ -13,20 +13,16 @@ import com.facebook.login.LoginManager
 import com.twitter.sdk.android.core.identity.TwitterAuthClient
 import com.twitter.sdk.android.core.*
 import com.facebook.login.LoginResult
+import com.linecorp.linesdk.LoginDelegate
+import com.linecorp.linesdk.LoginListener
+import com.linecorp.linesdk.Scope
+import com.linecorp.linesdk.auth.LineAuthenticationParams
+import com.linecorp.linesdk.auth.LineLoginResult
 import com.squareup.picasso.Picasso
 import com.twitter.sdk.android.core.models.User
 import com.twitter.sdk.android.core.TwitterException
-import android.R.attr.data
 import com.twitter.sdk.android.core.TwitterCore
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-// sun.jvm.hotspot.utilities.IntArray // ㅇㅐ는 왜계속 에러가 날까.. 구글링 해보자 ...
-
-
-
-
-
+//import sun.jvm.hotspot.utilities.IntArray // ㅇㅐ는 왜계속 에러가 날까.. 구글링 해보자 ...
 
 class MainActivity : AppCompatActivity() , View.OnClickListener{
     
@@ -35,6 +31,8 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
     private val twitterAuthClient = TwitterAuthClient()
     private var twitterInfo1 = ""
     private var facebookInfo1 = ""
+    private val lineChannelId = "1653637332"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +40,7 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
         
         main_btn_twitter_login_btn.setOnClickListener(this)
         main_text_facebook_login_btn.setOnClickListener(this)
-        main_text_line_login_btn.setOnClickListener(this)
+        loginLine()
     }
 
     override fun onClick(v: View?) {
@@ -53,11 +51,32 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
             R.id.main_text_facebook_login_btn -> {
                 loginFacebook()
             }
-            R.id.main_text_line_login_btn -> {
-            }
         }
     }
 
+    private fun loginLine(){
+
+        main_text_line_login_btn.setChannelId(lineChannelId)
+        main_text_line_login_btn.enableLineAppAuthentication(true)
+        main_text_line_login_btn.setAuthenticationParams(LineAuthenticationParams.Builder().scopes(listOf(Scope.PROFILE)).build())
+
+        Toast.makeText(this@MainActivity, "Failure", Toast.LENGTH_SHORT).show()
+
+        // A delegate for delegating the login result to the internal login handler.
+        val loginDelegate = LoginDelegate.Factory.create()
+        main_text_line_login_btn.setLoginDelegate(loginDelegate)
+
+        main_text_line_login_btn.addLoginListener(object : LoginListener {
+            override fun onLoginSuccess(result: LineLoginResult) {
+                Toast.makeText(this@MainActivity, "Login success", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onLoginFailure(result: LineLoginResult?) {
+                Toast.makeText(this@MainActivity, "Login failure", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+    }
     
 
     
@@ -82,7 +101,7 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
 
                     facebookInfo1 = "user_id : ${user.getString("id")} \n user_name : ${user.getString("name")} \n AccessToken : ${result.accessToken.token}"
                     main_text_user_info_facebook.text = facebookInfo1
-                    Picasso.with(this@MainActivity).load(Profile.getCurrentProfile().getProfilePictureUri(200,200)).into(main_image_profile_facebook)
+                    Picasso.get().load(Profile.getCurrentProfile().getProfilePictureUri(200,200)).into(main_image_profile_facebook)
 
                 }
                 val parameters = Bundle()
@@ -157,9 +176,7 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
 //                val photoUrlMiniSize = userResult.data.profileImageUrl.replace("_normal", "_mini")
 //                val photoUrlOriginalSize = userResult.data.profileImageUrl.replace("_normal", "")
 
-                Picasso.with(this@MainActivity).load(photoUrlNormalSize).into(main_image_profile_twitter)
-
-
+                Picasso.get().load(photoUrlNormalSize).into(main_image_profile_twitter)
 
             }
 
