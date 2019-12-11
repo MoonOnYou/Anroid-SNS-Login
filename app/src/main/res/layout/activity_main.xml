@@ -52,7 +52,7 @@
         android:layout_weight="1"
         android:layout_marginBottom="8dp"
         android:orientation="vertical">
-        <com.linecorp.linesdk.widget.LoginButton
+        <TextView
             android:id="@+id/main_text_line_login_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
