@@ -194,14 +194,8 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
                 val userId = result.lineProfile!!.userId
                 val profileUrl = result.lineProfile!!.pictureUrl.toString()
                 main_text_user_info_line.text = "displayName : $displayName \n statusMessage: $statusMessage \n userId : $userId \n accessToken: $accessToken"
-                Picasso.get().load(profileUrl).into(main_image_profile_line)
+                Picasso.get().load(profileUrl).into(main_image_profile_line) // 사용자가 사진을 설정 안했으면 null 로 들어온다(그냥 아무 그림도 안뜸 ), 트위터는 기본이미지가 들어옴
 
-
-
-//                val transitionIntent = Intent(this, PostLoginActivity::class.java)
-//                transitionIntent.putExtra("line_profile", result.lineProfile)
-//                transitionIntent.putExtra("line_credential", result.lineCredential)
-//                startActivity(transitionIntent)
             }
 
             LineApiResponseCode.CANCEL ->
