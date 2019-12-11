@@ -14,6 +14,16 @@ import com.twitter.sdk.android.core.identity.TwitterAuthClient
 import com.twitter.sdk.android.core.*
 import com.facebook.login.LoginResult
 import com.squareup.picasso.Picasso
+import com.twitter.sdk.android.core.models.User
+import com.twitter.sdk.android.core.TwitterException
+import android.R.attr.data
+import com.twitter.sdk.android.core.TwitterCore
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+// sun.jvm.hotspot.utilities.IntArray // ㅇㅐ는 왜계속 에러가 날까.. 구글링 해보자 ...
+
+
 
 
 
@@ -21,6 +31,7 @@ import com.squareup.picasso.Picasso
 class MainActivity : AppCompatActivity() , View.OnClickListener{
     
     private var facebookManager: CallbackManager? = null
+    private val twitterCoreSession = TwitterCore.getInstance().sessionManager.activeSession
     private val twitterAuthClient = TwitterAuthClient()
     private var twitterInfo1 = ""
     private var facebookInfo1 = ""
@@ -43,16 +54,12 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
                 loginFacebook()
             }
             R.id.main_text_line_login_btn -> {
-                twitterLogin()
             }
         }
     }
 
     
-    private fun twitterLogin(){
-        
 
-    }
     
     private fun loginFacebook(){
         facebookManager = CallbackManager.Factory.create()
@@ -95,8 +102,8 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
     }
 
     private fun loginTwitter() {
-        if (getTwitterSession() == null){
-            TwitterAuthClient().authorize(this, object : Callback<TwitterSession>() {
+        if (twitterCoreSession == null){
+            twitterAuthClient.authorize(this, object : Callback<TwitterSession>() {
                 override fun success(result: Result<TwitterSession>) {                              // 세션이 아직 없다면
                     Toast.makeText(this@MainActivity, "Success", Toast.LENGTH_SHORT).show()
                     val twitterSession = result.data
@@ -116,23 +123,18 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
                 }
             })
         } else {
-            fetchTwitterEmail(getTwitterSession())
+            fetchTwitterEmail(twitterCoreSession)
         }
     }
 
-    private fun getTwitterSession(): TwitterSession? {
-        return TwitterCore.getInstance().sessionManager.activeSession
-    }
-
     fun fetchTwitterEmail(twitterSession: TwitterSession?) {
-        TwitterAuthClient().requestEmail(twitterSession, object : Callback<String>() {
+        twitterAuthClient.requestEmail(twitterSession, object : Callback<String>() {
             override fun success(result: Result<String>) {
                 Toast.makeText(this@MainActivity, "fetchTwitterEmail", Toast.LENGTH_SHORT).show()
-                val twitterInfo2 = "e-mail : ${result.data} \n\n user_id : ${twitterSession?.userId} \n\n screen_name :  ${twitterSession?.userName}"
+                val twitterInfo2 = "e-mail : ${result.data} \n\n user_id : ${twitterSession?.userId} \n\n screen_name :  ${twitterSession?.userName}" // 유져네임은 시크릿하게만 가져 온다,아래꺼랑 다르게 토큰 가져 올수 있음 온유라는 이름은 못가져옴 // 유저 아이디 (숫자)/ 이메일은 밑에랑 동알하게 가져옴
 
-
-               // result.getProfileImageURL()
-                main_text_user_info_twitter.text = "$twitterInfo1  $twitterInfo2"
+                fetchTwitterProfileUrl()
+               main_text_user_info_twitter.text = "$twitterInfo1  $twitterInfo2"
             }
 
             override fun failure(exception: TwitterException) {
@@ -141,6 +143,31 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
         })
     }
 
+    fun fetchTwitterProfileUrl(){
+        val user = TwitterCore.getInstance().apiClient.accountService.verifyCredentials(true, true, true)
+        user.enqueue(object : Callback<User>() {
+
+            override fun success(userResult: Result<User>) {
+                val name = userResult.data.name // 유저네임은 정확하게 온유라고 가져옴 ..
+                val email = userResult.data.email //여기서도 이메일 잘가져온다......
+              //  main_text_user_info_twitter.text = "$name  $email"
+
+                val photoUrlNormalSize = userResult.data.profileImageUrlHttps // 이미지 뜬듯.. 힘들다..
+//                val photoUrlBiggerSize = userResult.data.profileImageUrl.replace("_normal", "_bigger")
+//                val photoUrlMiniSize = userResult.data.profileImageUrl.replace("_normal", "_mini")
+//                val photoUrlOriginalSize = userResult.data.profileImageUrl.replace("_normal", "")
+
+                Picasso.with(this@MainActivity).load(photoUrlNormalSize).into(main_image_profile_twitter)
+
+
+
+            }
+
+            override fun failure(exc: TwitterException) {
+                Log.d("TwitterKit", "Verify Credentials Failure", exc)
+            }
+        })
+    }
 
     @SuppressLint("MissingSuperCall")
     override fun onActivityResult(requestCode: Int, responseCode: Int, intent: Intent?) {
