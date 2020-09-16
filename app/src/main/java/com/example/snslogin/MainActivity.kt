@@ -1,27 +1,27 @@
 package com.example.snslogin
 
-import kotlinx.android.synthetic.main.activity_main.*
 import android.annotation.SuppressLint
-import android.os.Bundle
-import android.view.View
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.*
 import com.facebook.login.LoginManager
-import com.twitter.sdk.android.core.identity.TwitterAuthClient
-import com.twitter.sdk.android.core.*
 import com.facebook.login.LoginResult
+import com.linecorp.linesdk.LineApiResponseCode
 import com.linecorp.linesdk.Scope
 import com.linecorp.linesdk.auth.LineAuthenticationParams
-import com.squareup.picasso.Picasso
-import com.twitter.sdk.android.core.models.User
-import com.twitter.sdk.android.core.TwitterException
-import com.twitter.sdk.android.core.TwitterCore
 import com.linecorp.linesdk.auth.LineLoginApi
-import com.linecorp.linesdk.LineApiResponseCode
-
-//import sun.jvm.hotspot.utilities.IntArray                                                         // TODO ㅇㅐ는 왜계속 에러가 날까.. 구글링 해보자 ...
+import com.squareup.picasso.Picasso
+import com.twitter.sdk.android.core.Callback
+import com.twitter.sdk.android.core.Result
+import com.twitter.sdk.android.core.TwitterCore
+import com.twitter.sdk.android.core.TwitterException
+import com.twitter.sdk.android.core.TwitterSession
+import com.twitter.sdk.android.core.identity.TwitterAuthClient
+import com.twitter.sdk.android.core.models.User
+import kotlinx.android.synthetic.main.activity_main.*
 
 /*
 * 사용자 로그인 정보 받아올때 각각의 프로필 사진과 각각의 이메일은
@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
         main_btn_twitter_login_btn.setOnClickListener(this)
         main_text_facebook_login_btn.setOnClickListener(this)
         main_text_line_login_btn.setOnClickListener(this)
+        textViewInstaTest.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -56,7 +57,15 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
             R.id.main_text_line_login_btn -> {
                 loginLine()
             }
+            R.id.textViewInstaTest -> {
+                startInstarWebView()
+            }
         }
+    }
+
+    private fun startInstarWebView() {
+        // webView visible , gone 하기 귀찮아서 그냥 액티비티 하나 띄움
+        startActivity(Intent(this, InastaWebViewActivity::class.java))
     }
 
     private fun loginLine(){
