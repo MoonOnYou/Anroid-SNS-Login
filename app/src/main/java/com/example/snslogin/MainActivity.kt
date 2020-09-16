@@ -33,8 +33,6 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
     private var facebookManager: CallbackManager? = null
     private val twitterCoreSession = TwitterCore.getInstance().sessionManager.activeSession
     private val twitterAuthClient = TwitterAuthClient()
-    private val lineChannelId = "1653637332"
-    private val lineRequestCode = 2000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,8 +68,8 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
 
     private fun loginLine(){
 
-        val loginIntent = LineLoginApi.getLoginIntent(this, lineChannelId, LineAuthenticationParams.Builder().scopes(listOf(Scope.PROFILE,Scope.OPENID_CONNECT, Scope.OC_EMAIL)).build())
-        startActivityForResult(loginIntent, lineRequestCode)
+        val loginIntent = LineLoginApi.getLoginIntent(this, Constants.lineChannelId, LineAuthenticationParams.Builder().scopes(listOf(Scope.PROFILE,Scope.OPENID_CONNECT, Scope.OC_EMAIL)).build())
+        startActivityForResult(loginIntent, Constants.lineRequestCode)
 
     }
     
@@ -189,7 +187,7 @@ class MainActivity : AppCompatActivity() , View.OnClickListener{
     override fun onActivityResult(requestCode: Int, responseCode: Int, intent: Intent?) {
         twitterAuthClient.onActivityResult(requestCode, responseCode, intent)
         facebookManager?.onActivityResult(requestCode, responseCode, intent)
-        if (requestCode == lineRequestCode) lineRequest(intent)
+        if (requestCode == Constants.lineRequestCode) lineRequest(intent)
 
     }
 

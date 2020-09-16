@@ -50,15 +50,7 @@ class InastaWebViewActivity : AppCompatActivity() {
         // 인스타그램 로그인 팝업 띄어주고,
         // 로그인하면 리로드 url 주는데 마지막 code 뒤에 있는걸 저장해놧다가 ( 마지막의 샾은 포함하지 않음 ... 아마도 ? )
         // 토큰 가져오는 쿼리를 날리면 된다
-        val instargramTestBasicUrl = "https://api.instagram.com/oauth/authorize?client_id=990602627938098&redirect_uri=https://socialsizzle.herokuapp.com/auth/&scope=user_profile,user_media&response_type=code"
-        webView.loadUrl(instargramTestBasicUrl)
+        webView.loadUrl(Constants.instargramTestBasicUrl)
 
-    }
-
-    private fun isContainsDomain(url: String, array: ArrayList<String>) :Boolean {
-        for(item in array) {
-            if (url.contains(item)) return true
-        }
-        return false
     }
 }
